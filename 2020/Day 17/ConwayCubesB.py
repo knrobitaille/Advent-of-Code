@@ -7,20 +7,22 @@ If a cube is active and exactly 2 or 3 of its neighbors are also active,
 If a cube is inactive but exactly 3 of its neighbors are active, the cube
     becomes active. Otherwise, the cube remains inactive.
 """
-def find_neighbors(cube,cube_dict,dim=3):
+def find_neighbors(cube,cube_dict,dim=4):
     x = cube[0]
     y = cube[1]
     z = cube[2]
+    w = cube[3]
     neighbors = []
     for xa in range(x-1,x+2):
         for ya in range(y-1,y+2):
             for za in range(z-1,z+2):
-                if x == xa and y == ya and z == za:
-                    continue
-                try:
-                    neighbors.append(cube_dict[xa,ya,za])
-                except:
-                    pass
+                for wa in range(w-1,w+2):
+                    if x == xa and y == ya and z == za and w == wa:
+                        continue
+                    try:
+                        neighbors.append(cube_dict[xa,ya,za,wa])
+                    except:
+                        pass
     return neighbors
 
 def switch_cube(cube,cube_dict):
@@ -38,12 +40,13 @@ def check_switch(cube_value,neighbors):
             if neighbors.count('#') == 3:
                 return True
             
-def expand_matrix(scope,cube_dict,dim=3):
+def expand_matrix(scope,cube_dict,dim=4):
     for x in range(-scope,scope+1):
         for y in range(-scope,scope+1):
             for z in range(-scope,scope+1):
-                if (x,y,z) not in cube_dict:
-                    cube_dict[x,y,z] = '.'
+                for w in range(-scope,scope+1):
+                    if (x,y,z,w) not in cube_dict:
+                        cube_dict[x,y,z,w] = '.'
     return cube_dict
 
 def create_initial_cube_dict(input_lines):
@@ -52,7 +55,7 @@ def create_initial_cube_dict(input_lines):
     for n, line in enumerate(input_lines):
         for c in range(-size,size+1):
             try:
-                cube_dict[c,n-size,0]=line[c+size]
+                cube_dict[c,n-size,0,0]=line[c+size]
             except:
                 pass
     return cube_dict, size
