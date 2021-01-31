@@ -35,9 +35,9 @@ for rule in rules:
    
 # print("Rules\n",rules)
 # print("Rules\n",rules_dict)
-for k, v in rules_dict.items():
-    print(k,v)
-print("Messages\n",messages)
+# for k, v in rules_dict.items():
+#     print(k,v)
+# print("Messages\n",messages)
 print()
 
 seen_rules = {}
