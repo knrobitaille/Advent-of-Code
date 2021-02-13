@@ -5,13 +5,20 @@ input_lines = input_file.read().splitlines()
 
 intcode = input_lines[0].split(',')
 
-def intcode_comp(intcode,inputs):
-    op = 0
-    phase = False
+def intcode_comp(intcode,inputs,op=0):
+    if len(inputs) == 2:
+        phase = True
+    else:
+        phase = False
+        
+    if intcode[op] == '99':
+            return None, None
+        
     while intcode[op] != '99':
         opcode_instr = str(intcode[op]).zfill(5)
         opcode = opcode_instr[3:]
         # print("Opcode",opcode)
+        
         
         if opcode not in ['03','04']:
             param1mode = int(opcode_instr[2:3])
@@ -44,10 +51,12 @@ def intcode_comp(intcode,inputs):
         elif opcode == '03':
             # print("Opcode 3")
             if phase:
+                # print("Phase true",inputs[1])
                 ask = inputs[1]
+                phase = False
             else:
+                # print("Phase false",inputs[0])
                 ask = inputs[0]
-                phase = True
             
             pos = int(intcode[op+1])
             # print(pos,ask)
@@ -60,8 +69,8 @@ def intcode_comp(intcode,inputs):
             pos = int(intcode[op+1])
             value = intcode[pos]
             # print("Opcode 4:",value)
-            return value
             op += 2
+            return value, op
             
         elif opcode == '05':
             # print("Opcode 5")
@@ -93,21 +102,115 @@ def intcode_comp(intcode,inputs):
                 intcode[dest] = 0
             op += 4
             
+        if intcode[op] == '99':
+            # print("99 found:",op,intcode[op])
+            # print(intcode)
+            return None, None
+
+import copy
+
 iterable = [5,6,7,8,9]
 import itertools
 all_combos = list(itertools.permutations(iterable,len(iterable)))
 # print(all_combos)
 
+
 highest = (0,[])
 for combo in all_combos:
-    copy_int = intcode.copy()
+    # print("Combo",combo)
+    A = copy.deepcopy(intcode)
+    A_op = ''
+    B = copy.deepcopy(intcode)
+    B_op = ''
+    C = copy.deepcopy(intcode)
+    C_op = ''
+    D = copy.deepcopy(intcode)
+    D_op = ''
+    E = copy.deepcopy(intcode)
+    E_op = ''
+    
+    
+    
     next_num = 0
     cur_highest = 0
-    for i in combo:
-        next_num = intcode_comp(copy_int,[i,next_num])
+    count = 0
+    runs = 0
+    while True:
+        runs+=1
+        # print("Amp",count,next_num)
+        if count == 0:
+            if A_op == '':
+                next_num, A_op = intcode_comp(A,[next_num,combo[count]])
+            else:
+                next_num, A_op = intcode_comp(A,[next_num],A_op)
+            
+        elif count == 1:
+            if B_op == '':
+                next_num, B_op = intcode_comp(B,[next_num,combo[count]])
+            else:
+                next_num, B_op = intcode_comp(B,[next_num],B_op)
+            
+        elif count == 2:
+            if C_op == '':
+                next_num, C_op = intcode_comp(C,[next_num,combo[count]])
+            else:
+                next_num, C_op = intcode_comp(C,[next_num],C_op)
+            
+        elif count == 3:
+            if D_op == '':
+                next_num, D_op = intcode_comp(D,[next_num,combo[count]])
+            else:
+                next_num, D_op = intcode_comp(D,[next_num],D_op)
+            
+        elif count == 4:
+            if E_op == '':
+                next_num, E_op = intcode_comp(E,[next_num,combo[count]])
+            else:
+                next_num, E_op = intcode_comp(E,[next_num],E_op)
+        
+        
+        # print("next_num",next_num)
+        if next_num == None:
+            break
+        if count < 4:
+            count += 1
+        else:
+            count = 0
         if next_num > cur_highest:
             cur_highest = next_num
+            
+            
     if cur_highest > highest[0]:
         highest=(cur_highest,combo)
+    
 print("Answer",highest[0])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
