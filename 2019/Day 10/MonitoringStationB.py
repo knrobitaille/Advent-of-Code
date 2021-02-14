@@ -60,7 +60,69 @@ for y in range(HEIGHT):
         elif largest[1] < len(slope_set):
             largest = ((x,y),len(slope_set))
         
-print(largest)
-# for row in ast_map:
-#     print(row)
-                
+# print(largest)
+station = largest[0]
+# print(station)
+
+import math
+
+ast_deg_dis_dict = {}
+ast_deg_dis_tups=[]
+for asteroid in asteroids:
+    if asteroid == station:
+        continue
+    else:
+        x,y = (asteroid[0]-station[0]),(asteroid[1]-station[1])
+        radians = math.atan2(x,y)
+        degrees = math.degrees(radians)
+        degrees = abs(degrees-180)
+        distance = math.sqrt(x**2+y**2)
+        # print(asteroid,degrees,distance)
+        ast_deg_dis_dict[asteroid] = {'deg':degrees,"dis":distance}
+        ast_deg_dis_tups.append((asteroid,degrees,distance))
+
+# https://stackoverflow.com/questions/9376384/sort-a-list-of-tuples-depending-on-two-elements
+ast_deg_dis_tups = sorted(ast_deg_dis_tups,key=lambda element: (element[1], element[2]))
+# for i in ast_deg_dis_tups:
+#     print(i)
+
+import copy
+ordered = []
+while len(ast_deg_dis_tups) > 0:
+    
+    checking = copy.deepcopy(ast_deg_dis_tups)
+    walker = 0
+    
+    to_delete = []
+    while walker < len(checking):
+        ordered.append(checking[walker])
+        to_delete.append(walker)
+        
+        if len(checking) - walker == 1:
+            break
+        
+        walker += 1
+        try:
+            while checking[walker-1][1] == checking[walker][1]:
+                walker += 1
+        except:
+            pass
+    
+    for index in sorted(to_delete, reverse=True):
+        del ast_deg_dis_tups[index]
+        
+# for n, item in enumerate(ordered):
+#     print(n,item)
+
+# print(ordered[199])
+print("Answer",ordered[199][0][0]*100+ordered[199][0][1])
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
