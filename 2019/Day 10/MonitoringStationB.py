@@ -116,13 +116,3 @@ while len(ast_deg_dis_tups) > 0:
 
 # print(ordered[199])
 print("Answer",ordered[199][0][0]*100+ordered[199][0][1])
-        
-    
-        
-        
-        
-        
-        
-        
-        
-        
